@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  bank:
+    container_name: bankApi
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+    restart: on-failure
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bank
+      - SPRING_DATASOURCE_USERNAME=bank
+      - SPRING_DATASOURCE_PASSWORD=bankPassword
+    ports:
+      - "8080:8080"
+
+  db:
+    container_name: bankDB
+    image: postgres:16.3-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=bank
+      - POSTGRES_PASSWORD=bankPassword
+      - POSTGRES_DB=bank
